@@ -82,6 +82,8 @@ export default function LoginPage() {
       <div className={styles.demoBox}>
         <strong>Demo Credentials:</strong> demo@voerman.com / demo123
       </div>
+      {/* deploy-check: v1.0.1 */}
+      <span style={{ opacity: 0, fontSize: 1, position: "absolute" }}>deploy-ok-v1</span>
     </AuthLayout>
   )
 }
