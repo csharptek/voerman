@@ -1,0 +1,54 @@
+.page { display: flex; min-height: 100vh; margin: -72px -48px -40px -24px; }
+
+/* Admin sidebar */
+.adminSidebar { width: 280px; background: #fff; border-right: 1.275px solid #e2e8f0; flex-shrink: 0; display: flex; flex-direction: column; }
+.adminSidebarLogo { display: flex; align-items: center; gap: 12px; padding: 17px 24px; border-bottom: 1.275px solid #e2e8f0; height: 72px; box-sizing: border-box; }
+.adminLogoIcon { width: 40px; height: 40px; background: #171630; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.adminLogoTitle { font-size: 16px; font-weight: 600; color: #1a1d29; line-height: 1; }
+.adminLogoSub { font-size: 12px; color: #64748b; }
+.adminNavSection { padding: 16px 12px; }
+.adminNavLabel { font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.6px; padding: 0 12px; margin-bottom: 8px; }
+.adminNavItem { display: flex; align-items: center; gap: 12px; width: 100%; height: 40px; padding: 0 12px; border-radius: 8px; background: none; border: none; font-size: 14px; color: #64748b; cursor: pointer; font-family: 'Segoe UI',sans-serif; text-align: left; margin-bottom: 2px; }
+.adminNavItemActive { background: rgba(0,102,204,0.1); color: #171630; }
+
+/* Main content area */
+.adminMain { flex: 1; padding: 24px 48px 40px 24px; overflow-y: auto; background: #f9fafb; }
+.pageHeader { margin-bottom: 24px; }
+.pageTitle { font-size: 30px; font-weight: 600; color: #1a1d29; margin-bottom: 4px; }
+.pageSub { font-size: 16px; color: #64748b; }
+.card { background: #fff; border: 1.275px solid #e2e8f0; border-radius: 12px; padding: 25px; box-shadow: 0 1px 3px rgba(0,0,0,.1); margin-bottom: 24px; }
+.cardTitle { font-size: 18px; font-weight: 600; color: #1a1d29; margin-bottom: 16px; }
+.formGrid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.formField { display: flex; flex-direction: column; gap: 8px; }
+.fieldLabel { font-size: 14px; color: #1a1d29; }
+.fieldWrap { position: relative; }
+.fieldIcon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; object-fit: contain; }
+.fieldInput { width: 100%; height: 46px; border: 1.275px solid #e2e8f0; border-radius: 8px; padding: 0 16px 0 40px; font-size: 16px; font-family: 'Segoe UI',sans-serif; background: #fff; box-sizing: border-box; }
+.fieldInput:focus { outline: none; border-color: #0066cc; }
+.fieldInputFull { width: 100%; height: 46px; border: 1.275px solid #e2e8f0; border-radius: 8px; padding: 0 16px; font-size: 16px; font-family: 'Segoe UI',sans-serif; background: #fff; box-sizing: border-box; }
+.fieldHint { font-size: 14px; color: #64748b; }
+.calcBox { background: rgba(0,102,204,0.05); border: 1.275px solid rgba(0,102,204,0.2); border-radius: 8px; padding: 17px; }
+.calcHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.calcLabel { font-size: 14px; color: #1a1d29; }
+.ptsPreview { font-size: 14px; color: #64748b; margin-top: 8px; }
+.ptsPreview strong { color: #10b981; }
+.toggleList { display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px; }
+.toggleRow { display: flex; align-items: center; justify-content: space-between; border: 1.275px solid #e2e8f0; border-radius: 8px; padding: 16px; }
+.toggleLabel { font-size: 16px; font-weight: 600; color: #1a1d29; margin-bottom: 2px; }
+.toggleDesc { font-size: 14px; color: #64748b; }
+.toggle { position: relative; width: 44px; height: 24px; border-radius: 12px; border: none; cursor: pointer; padding: 0; flex-shrink: 0; }
+.toggleOn  { background: #171630; }
+.toggleOff { background: #f1f5f9; }
+.toggleThumb { position: absolute; top: 2px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); transition: left .2s; }
+.toggleOn  .toggleThumb { left: 22px; }
+.toggleOff .toggleThumb { left: 2px; }
+.statusNote { background: rgba(245,158,11,0.1); border: 1.275px solid rgba(245,158,11,0.2); border-radius: 8px; padding: 17px; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 24px; }
+.statusNoteTitle { font-size: 16px; font-weight: 600; color: #f59e0b; margin-bottom: 4px; }
+.statusNoteDesc { font-size: 14px; color: #64748b; }
+.formActions { display: flex; gap: 12px; justify-content: flex-end; }
+.clearBtn { height: 40px; padding: 0 16px; background: none; border: none; font-size: 14px; font-family: 'Segoe UI',sans-serif; cursor: pointer; color: #1a1d29; }
+.submitBtn { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; background: #171630; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-family: 'Segoe UI',sans-serif; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.submitBtnDisabled { opacity: 0.5; cursor: not-allowed; }
+.guideList { list-style: none; display: flex; flex-direction: column; gap: 8px; padding: 0; }
+.guideList li { font-size: 14px; color: #64748b; padding-left: 14px; position: relative; }
+.guideList li::before { content: '•'; position: absolute; left: 0; color: #171630; }

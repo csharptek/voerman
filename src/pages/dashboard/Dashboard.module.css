@@ -1,0 +1,11 @@
+.kpiGrid { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; margin-bottom: 24px; }
+.kpiIconBox { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.mono { font-family: Consolas, monospace; font-size: 13px; color: #1a1d29; font-weight: 700; }
+.muted { color: #64748b; }
+.pts { color: #171630; font-family: 'Segoe UI', sans-serif; }
+.actionGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.actionCard { border-radius: 12px; padding: 25px; box-shadow: 0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.1); border: 1.275px solid; display: flex; gap: 20px; align-items: flex-start; }
+.actionIconWrap { width: 62px; height: 62px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.actionBody { flex: 1; min-width: 0; }
+.actionTitle { font-size: 18px; font-weight: 600; color: #1a1d29; margin-bottom: 8px; }
+.actionDesc { font-size: 14px; color: #64748b; line-height: 20px; margin-bottom: 16px; }

@@ -1,0 +1,55 @@
+.heroCard { background: linear-gradient(173deg, rgba(0,102,204,0.1) 0%, transparent 100%), #fff; border: 1.275px solid rgba(0,102,204,0.2); border-radius: 12px; padding: 25px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.1); display: flex; align-items: center; justify-content: space-between; }
+.heroLeft { display: flex; align-items: center; gap: 16px; }
+.heroIconWrap { width: 66px; height: 66px; background: rgba(0,102,204,0.1); border: 1.275px solid rgba(0,102,204,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.heroIcon { width: 32px; height: 32px; object-fit: contain; }
+.heroLabel { font-size: 14px; color: #64748b; margin-bottom: 4px; }
+.heroCode { font-family: Consolas,monospace; font-size: 30px; font-weight: 700; color: #1a1d29; }
+.heroName { font-size: 14px; color: #64748b; }
+.heroStats { display: flex; align-items: center; gap: 24px; }
+.heroStat { }
+.heroStatLabel { font-size: 14px; color: #64748b; text-align: center; margin-bottom: 4px; }
+.heroStatValue { font-size: 24px; font-weight: 700; color: #1a1d29; text-align: center; }
+.heroStatValueGreen { font-size: 24px; font-weight: 700; color: #171630; text-align: center; }
+.heroDivider { width: 1px; height: 48px; background: #e2e8f0; }
+
+.kpiRow { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; margin-bottom: 24px; }
+.kpiCard { background: #fff; border: 1.275px solid #e2e8f0; border-radius: 12px; padding: 25px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.kpiIcon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+.kpiLabel { font-size: 14px; color: #64748b; margin-bottom: 4px; }
+.kpiValue { font-size: 24px; font-weight: 700; margin-bottom: 2px; }
+.kpiSub { font-size: 12px; color: #64748b; }
+
+.benefitsCard { background: #fff; border: 1.275px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,.1); display: flex; gap: 16px; align-items: flex-start; }
+.benefitsIconWrap { width: 48px; height: 48px; background: rgba(0,102,204,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.benefitsTitle { font-size: 16px; font-weight: 600; color: #1a1d29; margin-bottom: 8px; }
+.benefitsList { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.benefitsList li { font-size: 14px; color: #64748b; padding-left: 12px; position: relative; }
+.benefitsList li::before { content: '•'; position: absolute; left: 0; color: #171630; }
+
+.sectionCard { background: #fff; border: 1.275px solid #e2e8f0; border-radius: 12px; padding: 25px; box-shadow: 0 1px 3px rgba(0,0,0,.1); margin-bottom: 24px; }
+.sectionHeader { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; gap: 16px; }
+.sectionTitle { font-size: 18px; font-weight: 600; color: #1a1d29; margin-bottom: 4px; }
+.sectionSub { font-size: 14px; color: #64748b; }
+.btnRow { display: flex; gap: 8px; flex-shrink: 0; }
+.outlineBtn { display: inline-flex; align-items: center; gap: 6px; height: 42px; padding: 0 16px; border: 1.275px solid #171630; border-radius: 8px; background: #fff; color: #171630; font-size: 14px; font-family: 'Segoe UI',sans-serif; cursor: pointer; white-space: nowrap; }
+.primaryBtn { display: inline-flex; align-items: center; gap: 6px; height: 42px; padding: 0 16px; background: #171630; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-family: 'Segoe UI',sans-serif; cursor: pointer; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.memberName { font-size: 14px; font-weight: 600; color: #1a1d29; margin-bottom: 2px; }
+.memberCity { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #64748b; }
+.tierBadge { display: inline-block; border-radius: 6px; padding: 3px 10px; font-size: 12px; }
+.muted { color: #64748b; font-size: 14px; }
+
+.tierDistGrid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+.tierDistCard { border-radius: 8px; padding: 16px; }
+.tierDistHeader { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.tierDistCount { display: flex; align-items: baseline; gap: 6px; margin-bottom: 12px; }
+.tierDistNum { font-size: 30px; font-weight: 700; color: #1a1d29; }
+.tierDistLabel { font-size: 14px; color: #64748b; }
+.tierDistBar { background: #f1f5f9; border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 8px; }
+.tierDistFill { height: 100%; border-radius: 999px; }
+.tierDistPct { font-size: 12px; color: #64748b; }
+
+.actionRow { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.actionCard { background: #fff; border: 1.275px solid #e2e8f0; border-radius: 12px; padding: 25px; box-shadow: 0 1px 3px rgba(0,0,0,.1); display: flex; gap: 16px; align-items: flex-start; }
+.actionIconWrap { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.actionTitle { font-size: 16px; font-weight: 600; color: #1a1d29; margin-bottom: 4px; }
+.actionDesc { font-size: 14px; color: #64748b; line-height: 1.5; }

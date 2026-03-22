@@ -1,0 +1,52 @@
+.heroCard { background: linear-gradient(174deg, rgba(251,191,36,0.1) 0%, transparent 100%), #fff; border: 1.275px solid rgba(251,191,36,0.3); border-radius: 12px; padding: 25px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.1); display: flex; align-items: center; justify-content: space-between; }
+.heroLeft { display: flex; align-items: center; gap: 16px; }
+.heroIconWrap { width: 66px; height: 66px; background: rgba(251,191,36,0.2); border: 1.275px solid rgba(251,191,36,0.3); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.heroIcon { width: 32px; height: 32px; object-fit: contain; }
+.heroLabel { font-size: 14px; color: #64748b; margin-bottom: 4px; }
+.heroTierName { font-size: 36px; font-weight: 700; color: #1a1d29; text-transform: capitalize; }
+.heroStats { display: flex; align-items: center; gap: 24px; }
+.heroStatLabel { font-size: 14px; color: #64748b; margin-bottom: 4px; }
+.heroStatValue { font-size: 24px; font-weight: 700; color: #171630; }
+.heroDivider { width: 1px; height: 48px; background: #e2e8f0; }
+
+.progressCard { background: #fff; border: 1.275px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.1); }
+.cardTitle { font-size: 18px; font-weight: 600; color: #1a1d29; margin-bottom: 20px; }
+.progressBg { background: #f1f5f9; border-radius: 999px; height: 12px; overflow: hidden; margin-bottom: 32px; }
+.progressFill { height: 100%; background: linear-gradient(90deg, #fbbf24, rgba(251,191,36,0.8)); border-radius: 999px; }
+.milestones { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; }
+.milestone { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.milestoneIconWrap { width: 64px; height: 64px; border-radius: 50%; border: 3.824px solid; display: flex; align-items: center; justify-content: center; }
+.milestoneIcon { width: 24px; height: 24px; object-fit: contain; }
+.milestoneName { font-size: 16px; font-weight: 600; }
+.milestoneRange { font-size: 12px; color: #64748b; }
+.milestoneStatus { width: 20px; height: 20px; object-fit: contain; }
+.currentBadge { background: rgba(245,158,11,0.1); border: 1.275px solid rgba(245,158,11,0.2); color: #f59e0b; border-radius: 6px; padding: 3px 10px; font-size: 12px; }
+
+.tierGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+.tierCard { border-radius: 12px; padding: 25px; border-style: solid; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.tierCardHeader { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+.tierCardLeft { display: flex; align-items: center; gap: 12px; }
+.tierIconBox { width: 54px; height: 54px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.tierIcon { width: 28px; height: 28px; object-fit: contain; }
+.tierCardName { font-size: 24px; font-weight: 700; color: #1a1d29; }
+.tierCardRange { font-size: 14px; color: #64748b; }
+.currentTag { background: rgba(245,158,11,0.1); border: 1.275px solid rgba(245,158,11,0.2); color: #f59e0b; border-radius: 6px; padding: 7px 13px; font-size: 12px; white-space: nowrap; }
+.tierMeta { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1.275px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 20px; }
+.metaLabel { font-size: 12px; color: #64748b; margin-bottom: 4px; }
+.metaValue { font-size: 14px; font-weight: 600; color: #1a1d29; }
+.tierSection { margin-bottom: 20px; }
+.tierSectionHead { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #1a1d29; margin-bottom: 12px; }
+.perksList { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.perkItem { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.rewardList { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.rewardItem { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; font-size: 14px; }
+.higherTier { font-size: 12px; color: #64748b; }
+.earnMoreBtn { width: 100%; height: 42px; border: 1.275px solid #171630; background: none; color: #171630; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: 'Segoe UI',sans-serif; margin-top: 8px; }
+.lockedNote { background: rgba(226,232,240,0.5); border: 1.275px solid #e2e8f0; border-radius: 8px; padding: 17px; font-size: 14px; color: #64748b; text-align: center; margin-top: 8px; }
+
+.howCard { background: #fff; border: 1.275px solid #e2e8f0; border-radius: 12px; padding: 25px; box-shadow: 0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.1); }
+.howGrid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; }
+.howItem { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 16px; }
+.howIconWrap { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+.howTitle { font-size: 16px; font-weight: 600; color: #1a1d29; margin-bottom: 8px; }
+.howDesc { font-size: 14px; color: #64748b; line-height: 1.5; }

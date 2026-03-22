@@ -1,0 +1,45 @@
+/* Summary Card */
+.summaryCard { background: linear-gradient(174deg, rgba(0,102,204,0.1) 0%, transparent 100%), #fff; border: 1.275px solid rgba(0,102,204,0.2); border-radius: 12px; padding: 25px; box-shadow: 0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.1); margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+.summaryLeft { display: flex; align-items: center; gap: 16px; }
+.summaryIconWrap { width: 66px; height: 66px; background: rgba(0,102,204,0.1); border: 1.275px solid rgba(0,102,204,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.summaryIcon { width: 32px; height: 32px; object-fit: contain; }
+.summaryLabel { font-size: 14px; color: #64748b; margin-bottom: 4px; }
+.summaryValue { font-size: 36px; font-weight: 700; color: #171630; line-height: 40px; }
+.summaryRight { text-align: right; }
+.goldPill { display: flex; align-items: center; gap: 8px; background: rgba(245,158,11,0.1); border: 1.275px solid rgba(245,158,11,0.2); border-radius: 6px; padding: 7px 13px; margin-top: 6px; font-size: 12px; color: #f59e0b; }
+.goldPillIcon { width: 16px; height: 16px; object-fit: contain; }
+
+/* Tabs */
+.tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.tab { padding: 8px 14px; border-radius: 8px; background: #f1f5f9; color: #1a1d29; border: none; font-size: 14px; cursor: pointer; font-family: 'Segoe UI',sans-serif; }
+.tabActive { background: #171630; color: #fff; }
+
+/* Grid */
+.grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+
+/* Reward Card */
+.rewardCard { background: #fff; border: 1.275px solid #e2e8f0; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; position: relative; transition: border-color .15s, box-shadow .15s; }
+.rewardCard:hover { border-color: rgba(23,22,48,0.3); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+.rewardCardSelected { border-color: #171630; box-shadow: 0 0 0 3px rgba(23,22,48,.1); }
+.rewardCardLocked { opacity: 0.6; }
+.rewardHeader { display: flex; align-items: flex-start; justify-content: space-between; }
+.rewardIconBox { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.tierBadge { border-radius: 6px; padding: 3px 11px; font-size: 12px; height: 26px; display: inline-flex; align-items: center; }
+.rewardName { font-size: 18px; font-weight: 600; color: #1a1d29; line-height: 28px; }
+.rewardDesc { font-size: 14px; color: #64748b; line-height: 20px; flex: 1; }
+.rewardFooter { display: flex; align-items: center; justify-content: space-between; border-bottom: 1.275px solid #e2e8f0; padding-bottom: 16px; }
+.rewardPtsLabel { font-size: 12px; color: #64748b; margin-bottom: 4px; }
+.rewardPtsValue { font-size: 24px; font-weight: 700; color: #1a1d29; }
+.redeemBtn { width: 100%; height: 40px; background: #171630; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-family: 'Segoe UI',sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.redeemBtn:hover { background: #2a2850; }
+.redeemBtnLocked { width: 100%; height: 42px; background: none; color: #171630; border: 1.275px solid #171630; border-radius: 8px; font-size: 14px; font-family: 'Segoe UI',sans-serif; cursor: not-allowed; display: flex; align-items: center; justify-content: center; gap: 8px; opacity: 0.5; }
+
+/* Confirm bar */
+.confirmBar { position: fixed; bottom: 0; left: 280px; right: 0; background: #fff; border-top: 1.275px solid #e2e8f0; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; box-shadow: 0 -4px 16px rgba(0,0,0,.08); z-index: 50; }
+.confirmInfo { display: flex; align-items: center; gap: 12px; }
+.confirmIconBox { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.confirmName { font-size: 16px; font-weight: 600; color: #1a1d29; }
+.confirmPts { font-size: 14px; color: #64748b; }
+.confirmActions { display: flex; gap: 12px; }
+.cancelBtn { padding: 10px 20px; background: #f1f5f9; color: #1a1d29; border: 1.275px solid #e2e8f0; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: 'Segoe UI',sans-serif; }
+.confirmBtn { padding: 10px 20px; background: #171630; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: 'Segoe UI',sans-serif; }

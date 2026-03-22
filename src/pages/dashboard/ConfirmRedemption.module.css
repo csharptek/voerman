@@ -1,0 +1,41 @@
+.backRow { margin-bottom: 16px; }
+.backBtn { display: inline-flex; align-items: center; gap: 6px; background: none; border: none; color: #64748b; font-size: 14px; cursor: pointer; font-family: 'Segoe UI',sans-serif; padding: 0; }
+.backBtn:hover { color: #1a1d29; }
+.summaryBanner { background: linear-gradient(174deg, rgba(0,102,204,0.1) 0%, transparent 100%), #fff; border: 1.275px solid rgba(0,102,204,0.2); border-radius: 12px; padding: 25px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.summaryLeft { display: flex; align-items: center; gap: 16px; }
+.summaryIcon { width: 66px; height: 66px; background: rgba(0,102,204,0.1); border: 1.275px solid rgba(0,102,204,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.summaryLabel { font-size: 14px; color: #64748b; margin-bottom: 4px; }
+.summaryBig { font-size: 36px; font-weight: 700; color: #171630; }
+.goldPill { display: inline-flex; align-items: center; gap: 6px; background: rgba(245,158,11,0.1); border: 1.275px solid rgba(245,158,11,0.2); border-radius: 6px; padding: 6px 12px; font-size: 12px; color: #f59e0b; margin-top: 4px; }
+.grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; }
+.rewardPreview { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 24px; }
+.previewIcon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.previewName { font-size: 18px; font-weight: 600; color: #1a1d29; margin-bottom: 6px; }
+.previewDesc { font-size: 14px; color: #64748b; line-height: 1.5; }
+.ptsBreakdown { border: 1.275px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
+.ptsRow { display: flex; justify-content: space-between; padding: 12px 16px; border-bottom: 1.275px solid #e2e8f0; font-size: 14px; color: #64748b; }
+.ptsRow:last-child { border-bottom: none; }
+.ptsTotal { background: #f8fafc; font-weight: 600; color: #1a1d29; }
+.infoText { font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 16px; }
+.noteBox { background: rgba(238,239,228,.5); border: 1.275px solid #eeefe4; border-radius: 8px; padding: 14px; font-size: 13px; color: #64748b; }
+.noteBox strong { color: #1a1d29; }
+.btnRow { display: flex; gap: 12px; margin-top: 16px; }
+.btnRow > * { flex: 1; }
+.cancelBtn { height: 42px; background: #f1f5f9; color: #1a1d29; border: 1.275px solid #e2e8f0; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: 'Segoe UI',sans-serif; }
+.confirmBtn { height: 42px; background: #171630; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: 'Segoe UI',sans-serif; }
+
+/* Success overlay — as it appears in Figma (dark backdrop over the rewards page) */
+.overlayBg { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; }
+.overlayCard { background: #fff; border: 1.275px solid #e2e8f0; border-radius: 12px; padding: 48px; width: 672px; max-width: 90vw; box-shadow: 0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.1); }
+.successIconWrap { width: 80px; height: 80px; background: rgba(16,185,129,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; }
+.successIcon { width: 40px; height: 40px; object-fit: contain; }
+.successTitle { font-size: 24px; font-weight: 600; color: #1a1d29; text-align: center; margin-bottom: 8px; }
+.successBody { font-size: 16px; color: #64748b; text-align: center; margin-bottom: 24px; }
+.voucherBox { background: #f1f5f9; border: 1.275px solid #e2e8f0; border-radius: 8px; padding: 24px; text-align: center; margin-bottom: 24px; }
+.voucherLabel { font-size: 14px; color: #64748b; margin-bottom: 8px; }
+.voucherCode { font-family: Consolas,monospace; font-size: 30px; font-weight: 700; color: #1a1d29; margin-bottom: 8px; letter-spacing: 2px; }
+.voucherNote { font-size: 12px; color: #64748b; }
+.modalActions { display: flex; gap: 12px; }
+.modalActions > * { flex: 1; }
+.downloadBtn { height: 42px; background: none; color: #171630; border: 1.275px solid #171630; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: 'Segoe UI',sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.doneBtn { height: 42px; background: #171630; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: 'Segoe UI',sans-serif; }
