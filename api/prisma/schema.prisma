@@ -1,0 +1,246 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  ADMIN
+  VIEWER
+}
+
+enum Tier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+enum MoveStatus {
+  PENDING          // created, invoice not yet paid
+  INVOICE_PAID     // invoice confirmed paid
+  POINTS_PENDING   // paid but claims window open
+  CREDITED         // points confirmed and credited
+  CANCELLED        // cancelled, no points
+}
+
+enum PointsType {
+  EARNED
+  REDEEMED
+  ADJUSTED
+  EXPIRED
+}
+
+enum RedemptionStatus {
+  PENDING
+  CONFIRMED
+  USED
+  EXPIRED
+  CANCELLED
+}
+
+enum RewardCategory {
+  SERVICE_CREDIT
+  PREMIUM_SERVICE
+  INSURANCE
+  PREMIUM_PACKAGE
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
+model GroupCode {
+  id        String    @id @default(uuid())
+  code      String    @unique  // e.g. VGM-GLOBAL-01
+  name      String              // e.g. Global Moving Alliance
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  companies Company[]
+
+  @@map("group_codes")
+}
+
+model Company {
+  id                  String    @id @default(uuid())
+  name                String
+  contactPerson       String
+  email               String    @unique
+  phone               String?
+  country             String
+  city                String
+  billingEntity       String?
+  networkAffiliation  String?
+  groupCodeId         String?
+  tier                Tier      @default(BRONZE)
+  pointsBalance       Int       @default(0)
+  isActive            Boolean   @default(true)
+  registeredAt        DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  groupCode     GroupCode?    @relation(fields: [groupCodeId], references: [id])
+  users         User[]
+  moves         Move[]
+  pointsLedger  PointsLedger[]
+  redemptions   Redemption[]
+
+  @@map("companies")
+}
+
+model User {
+  id           String    @id @default(uuid())
+  companyId    String
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         UserRole  @default(VIEWER)
+  lastLoginAt  DateTime?
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  company              Company              @relation(fields: [companyId], references: [id])
+  movesCreated         Move[]               @relation("CreatedBy")
+  redemptions          Redemption[]
+  notificationPrefs    NotificationPrefs?
+  refreshTokens        RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+model Move {
+  id               String     @id @default(uuid())
+  companyId        String
+  moveRef          String     @unique  // e.g. VM-NL-2026-8472
+  vendorCode       String              // e.g. VGM-AMS-001
+
+  // Route
+  origin           String
+  destination      String
+  volumeM3         Float?
+  weightKg         Float?
+  containerType    String?
+  serviceType      String?
+
+  // Financials
+  totalRevenue     Float
+  excludedAmount   Float      @default(0)
+  exclusionReason  String?
+  eligibleRevenue  Float      // computed: totalRevenue - excludedAmount
+
+  // Invoice
+  invoiceNumber    String?
+  invoiceDate      DateTime?
+  invoicePaidAt    DateTime?
+  claimsFiled      Boolean    @default(false)
+  claimsDetail     String?
+
+  // Points
+  status           MoveStatus @default(PENDING)
+  pointsAwarded    Int        @default(0)
+
+  createdByUserId  String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  company          Company        @relation(fields: [companyId], references: [id])
+  createdBy        User?          @relation("CreatedBy", fields: [createdByUserId], references: [id])
+  pointsLedger     PointsLedger[]
+
+  @@index([companyId])
+  @@index([status])
+  @@map("moves")
+}
+
+model PointsLedger {
+  id           String     @id @default(uuid())
+  companyId    String
+  moveId       String?
+  redemptionId String?
+  type         PointsType
+  points       Int                    // positive = earned/adjusted, negative = redeemed/expired
+  balanceAfter Int
+  description  String
+  createdAt    DateTime   @default(now())
+
+  company    Company     @relation(fields: [companyId], references: [id])
+  move       Move?       @relation(fields: [moveId], references: [id])
+  redemption Redemption? @relation(fields: [redemptionId], references: [id])
+
+  @@index([companyId])
+  @@map("points_ledger")
+}
+
+model Reward {
+  id             String         @id @default(uuid())
+  name           String
+  description    String
+  pointsRequired Int
+  category       RewardCategory
+  tierRequired   Tier           @default(BRONZE)
+  isActive       Boolean        @default(true)
+  sortOrder      Int            @default(0)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  redemptions Redemption[]
+
+  @@map("rewards")
+}
+
+model Redemption {
+  id               String           @id @default(uuid())
+  companyId        String
+  rewardId         String
+  redeemedByUserId String
+  pointsSpent      Int
+  voucherCode      String           @unique  // e.g. VGM-VR3OWU3D
+  status           RedemptionStatus @default(PENDING)
+  redeemedAt       DateTime         @default(now())
+  expiresAt        DateTime
+  usedAt           DateTime?
+  updatedAt        DateTime         @updatedAt
+
+  company      Company        @relation(fields: [companyId], references: [id])
+  reward       Reward         @relation(fields: [rewardId], references: [id])
+  redeemedBy   User           @relation(fields: [redeemedByUserId], references: [id])
+  pointsLedger PointsLedger[]
+
+  @@index([companyId])
+  @@map("redemptions")
+}
+
+model NotificationPrefs {
+  id              String  @id @default(uuid())
+  userId          String  @unique
+  pointsEarned    Boolean @default(true)
+  moveConfirmed   Boolean @default(true)
+  tierProgress    Boolean @default(true)
+  redemptionSuccess Boolean @default(true)
+  monthlyStatement Boolean @default(false)
+  marketing       Boolean @default(false)
+  systemUpdates   Boolean @default(true)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification_prefs")
+}

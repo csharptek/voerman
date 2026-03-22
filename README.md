@@ -1,111 +1,92 @@
-# Voerman Green Miles — Partner Portal
+# Voerman Green Miles
 
-A production-ready React/Vite partner portal for the Voerman Green Miles loyalty program.
+B2B loyalty portal for Voerman international moving partners.
 
-## Tech Stack
+```
+/               → React 18 + Vite frontend  (deploys to Vercel)
+/api            → Node.js + Express backend  (deploys to Railway)
+```
 
-- **React 18** + **TypeScript**
-- **Vite 6** (build tool)
-- **React Router v6** (client-side routing)
-- **CSS Modules** (component-scoped styling)
-- **Lucide React** (icons)
+---
 
-## Screens
-
-| Route | Screen |
-|-------|--------|
-| `/login` | Login |
-| `/register` | Partner Registration |
-| `/register/success` | Registration Submitted |
-| `/dashboard` | Dashboard (KPIs, Tier Progress, Recent Moves) |
-| `/moves` | Move History (searchable full table) |
-| `/moves/:id` | Move History Details |
-| `/redeem` | Redeem Rewards (catalog) |
-| `/redeem/confirm` | Confirm Redemption |
-| `/tier-benefits` | Tier Benefits (Bronze → Platinum) |
-| `/group-codes` | Group Codes |
-| `/reports` | Reports & Analytics |
-| `/settings` | Settings (Account / Security / Notifications / Users) |
-| `/admin` | Admin Panel (Partners, Moves, Approvals) |
-
-## Getting Started
+## Local Development
 
 ```bash
-# Install dependencies
+# 1. Clone
+git clone https://github.com/YOUR_ORG/voerman.git
+cd voerman
+
+# 2. Install frontend dependencies
 npm install
 
-# Start dev server
+# 3. Install backend dependencies
+cd api && npm install && cd ..
+
+# 4. Configure frontend env
+cp .env.example .env.local
+# Set: VITE_API_URL=http://localhost:3000
+
+# 5. Configure backend env
+cp api/.env.example api/.env
+# Set: DATABASE_URL=postgresql://...
+
+# 6. Run DB migrations + seed
+cd api && npm run db:migrate:dev && npm run db:seed && cd ..
+
+# 7. Start frontend (terminal 1)
 npm run dev
 
-# Build for production
-npm run build
-
-# Preview production build locally
-npm run preview
+# 8. Start backend (terminal 2)
+cd api && npm run dev
 ```
 
-## Deploy to Vercel
+Frontend → http://localhost:5173  
+Backend  → http://localhost:3000  
+Health   → http://localhost:3000/health
 
-```bash
-# Install Vercel CLI
-npm i -g vercel
+### Seed login credentials
+| Email | Password | Role |
+|-------|----------|------|
+| john@acmemoving.com | Admin@123 | Admin |
+| jane@acmemoving.com | Viewer@123 | Viewer |
 
-# Deploy
-vercel
-```
+---
 
-Or connect your GitHub repo at [vercel.com](https://vercel.com) — it auto-detects Vite.
+## Deploy Frontend → Vercel
 
-## Deploy to Railway
+1. Import repo on [vercel.com](https://vercel.com)
+2. **Root Directory** → leave as `/` (default)
+3. Framework: **Vite** (auto-detected)
+4. Add environment variable: `VITE_API_URL=https://your-api.railway.app`
+5. Deploy
 
-1. Push to GitHub
-2. Go to [railway.app](https://railway.app) → New Project → Deploy from GitHub
-3. Railway auto-uses `railway.toml` — no config needed
+---
 
-## Connect a Backend
+## Deploy Backend → Railway
 
-The app uses `src/context/AuthContext.tsx` for auth and `src/data/mockData.ts` for all data.
+1. New project on [railway.app](https://railway.app)
+2. Add **PostgreSQL** service
+3. Add **GitHub repo** service
+4. In the service settings set **Root Directory → `api`**
+5. Add environment variables:
+   ```
+   JWT_SECRET=<openssl rand -hex 32>
+   JWT_REFRESH_SECRET=<openssl rand -hex 32>
+   FRONTEND_URL=https://your-app.vercel.app
+   NODE_ENV=production
+   ```
+   `DATABASE_URL` is auto-injected when you link the Postgres service.
+6. Deploy — Railway runs migrations automatically on startup.
 
-To wire up a real backend:
+---
 
-1. **Auth** — replace `login()` in `AuthContext.tsx` with a `fetch('/api/auth/login', ...)` call
-2. **Data** — replace imports from `mockData.ts` with API calls in each page component
-3. **Environment** — create `.env.local`:
+## Stack
 
-```env
-VITE_API_URL=https://your-api.railway.app
-```
-
-Then use `import.meta.env.VITE_API_URL` in your fetch calls.
-
-## Project Structure
-
-```
-src/
-├── components/
-│   └── ui/               # Shared UI components + CSS module
-├── context/
-│   └── AuthContext.tsx   # Auth state (replace with real API)
-├── data/
-│   └── mockData.ts       # All mock data (replace with API calls)
-├── layouts/
-│   ├── AuthLayout.tsx    # Centered auth page wrapper
-│   └── DashboardLayout.tsx  # Sidebar + topbar layout
-├── pages/
-│   ├── auth/             # Login, Register, Success
-│   └── dashboard/        # All 10 dashboard screens
-├── styles/
-│   └── globals.css       # Design tokens + resets
-└── App.tsx               # Router + route definitions
-```
-
-## Design System
-
-All design tokens extracted from Figma file `k7LT2s5OterwlqR7R2EBW3`:
-
-- **Primary:** `#171630` (Navy)
-- **Accent:** `#41ab35` (Green)
-- **Background:** `#f8f9fb`
-- **Border:** `1.275px solid #e2e8f0`
-- **Border radius:** `8px` (inputs), `12px` (cards)
-- **Font:** Segoe UI
+| | Tech |
+|---|---|
+| Frontend | React 18, TypeScript, Vite, React Router v6, CSS Modules |
+| Backend | Node.js 20, Express 4, TypeScript |
+| ORM | Prisma 5 |
+| Database | PostgreSQL 15 |
+| Auth | JWT (1h access + 30d refresh) |
+| Reports | ExcelJS + PDFKit |
