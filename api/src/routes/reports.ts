@@ -243,8 +243,8 @@ router.get('/analytics', async (req: Request, res: Response) => {
 async function streamExcel(
   res: Response,
   filename: string,
-  moves: any[],
-  redemptions: any[],
+  moves: Record<string, unknown>[],
+  redemptions: Record<string, unknown>[],
   summary: object
 ) {
   const workbook = new ExcelJS.Workbook()
@@ -308,7 +308,7 @@ async function streamExcel(
 }
 
 // ── Shared PDF stream helper ──────────────────────────────────────────────────
-function streamPdf(res: Response, filename: string, summary: object, moves: any[]) {
+function streamPdf(res: Response, filename: string, summary: object, moves: Record<string, unknown>[]) {
   const doc = new PDFDocument({ margin: 50 })
   res.setHeader('Content-Type', 'application/pdf')
   res.setHeader('Content-Disposition', `attachment; filename="${filename}.pdf"`)

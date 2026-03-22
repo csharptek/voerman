@@ -1,10 +1,10 @@
 import { Router, Request, Response } from 'express'
 import { z } from 'zod'
+import { Prisma, MoveStatus, Tier } from '@prisma/client'
 import { prisma } from '../lib/prisma'
 import { ok, created, notFound, badRequest, paginated } from '../lib/response'
 import { authenticate, requireAdmin } from '../middleware/auth'
 import { calculatePoints } from '../lib/points'
-import { MoveStatus, Tier } from '@prisma/client'
 
 const router = Router()
 router.use(authenticate, requireAdmin)
@@ -61,7 +61,7 @@ router.get('/partners', async (req: Request, res: Response) => {
   const skip   = (page - 1) * limit
   const search = req.query.search as string | undefined
 
-  const where = {
+  const where: Prisma.CompanyWhereInput = {
     isActive: true,
     ...(search ? {
       OR: [

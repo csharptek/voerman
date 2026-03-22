@@ -1,13 +1,16 @@
 import { Router, Request, Response } from 'express'
 import { z } from 'zod'
+import { Prisma, MoveStatus, Tier } from '@prisma/client'
 import { prisma } from '../lib/prisma'
 import { ok, created, notFound, badRequest, paginated } from '../lib/response'
 import { authenticate, requireAdmin } from '../middleware/auth'
 import { calculatePoints } from '../lib/points'
-import { MoveStatus } from '@prisma/client'
 
 const router = Router()
 router.use(authenticate)
+
+// Prisma interactive transaction client type
+type TxClient = Omit<typeof prisma, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>
 
 // ── GET /moves — paginated list ───────────────────────────────────────────────
 router.get('/', async (req: Request, res: Response) => {
@@ -17,14 +20,14 @@ router.get('/', async (req: Request, res: Response) => {
   const status = req.query.status as MoveStatus | undefined
   const search = req.query.search as string | undefined
 
-  const where = {
+  const where: Prisma.MoveWhereInput = {
     companyId: req.user!.companyId,
     ...(status ? { status } : {}),
     ...(search ? {
       OR: [
-        { moveRef: { contains: search, mode: 'insensitive' as const } },
-        { origin:  { contains: search, mode: 'insensitive' as const } },
-        { destination: { contains: search, mode: 'insensitive' as const } },
+        { moveRef:     { contains: search, mode: 'insensitive' } },
+        { origin:      { contains: search, mode: 'insensitive' } },
+        { destination: { contains: search, mode: 'insensitive' } },
       ],
     } : {}),
   }
@@ -50,17 +53,16 @@ router.get('/', async (req: Request, res: Response) => {
 // ── GET /moves/:id — full detail ──────────────────────────────────────────────
 router.get('/:id', async (req: Request, res: Response) => {
   const move = await prisma.move.findFirst({
-    where: { id: req.params.id, companyId: req.user!.companyId },
+    where:   { id: req.params.id, companyId: req.user!.companyId },
     include: { createdBy: { select: { id: true, name: true, email: true } } },
   })
   if (!move) throw notFound('Move')
 
-  // Build status timeline
   const timeline = [
     { step: 'Booking Confirmed', done: true,
-      date: move.createdAt, description: 'Move booking created and confirmed' },
+      date: move.createdAt,    description: 'Move booking created and confirmed' },
     { step: 'Invoice Generated', done: !!move.invoiceNumber,
-      date: move.invoiceDate, description: `Invoice ${move.invoiceNumber ?? ''} generated` },
+      date: move.invoiceDate,  description: `Invoice ${move.invoiceNumber ?? ''} generated` },
     { step: 'Invoice Paid', done: !!move.invoicePaidAt,
       date: move.invoicePaidAt, description: 'Payment received and confirmed' },
     { step: 'Points Confirmed', done: move.status === MoveStatus.CREDITED,
@@ -71,7 +73,7 @@ router.get('/:id', async (req: Request, res: Response) => {
   return ok(res, { ...move, timeline })
 })
 
-// ── POST /moves — admin creates booking ───────────────────────────────────────
+// ── POST /moves — admin creates booking ──────────────────────────────────────
 const CreateMoveSchema = z.object({
   companyId:       z.string().uuid(),
   moveRef:         z.string().min(3),
@@ -101,18 +103,19 @@ router.post('/', requireAdmin, async (req: Request, res: Response) => {
   const pointsAwarded   = (!invoicePaid || claimsFiled) ? 0 : calculatePoints(eligibleRevenue)
 
   const status: MoveStatus =
-    claimsFiled     ? MoveStatus.CANCELLED :
-    !invoicePaid    ? MoveStatus.PENDING :
-    pointsAwarded > 0 ? MoveStatus.CREDITED : MoveStatus.INVOICE_PAID
+    claimsFiled       ? MoveStatus.CANCELLED :
+    !invoicePaid      ? MoveStatus.PENDING   :
+    pointsAwarded > 0 ? MoveStatus.CREDITED  : MoveStatus.INVOICE_PAID
 
   const move = await prisma.$transaction(async (tx) => {
-    const m = await tx.move.create({
+    const txc = tx as unknown as TxClient
+    const m = await txc.move.create({
       data: {
         ...rest,
         totalRevenue,
         excludedAmount,
         eligibleRevenue,
-        invoicePaidAt: invoicePaid ? new Date() : null,
+        invoicePaidAt:   invoicePaid ? new Date() : null,
         claimsFiled,
         status,
         pointsAwarded,
@@ -120,29 +123,22 @@ router.post('/', requireAdmin, async (req: Request, res: Response) => {
       },
     })
 
-    // Credit points immediately if status is CREDITED
     if (status === MoveStatus.CREDITED && pointsAwarded > 0) {
-      const company = await tx.company.findUnique({ where: { id: rest.companyId } })
+      const company = await txc.company.findUnique({ where: { id: rest.companyId } })
       const newBalance = (company?.pointsBalance ?? 0) + pointsAwarded
 
-      await tx.company.update({
-        where: { id: rest.companyId },
-        data:  { pointsBalance: newBalance },
-      })
-
-      await tx.pointsLedger.create({
+      await txc.company.update({ where: { id: rest.companyId }, data: { pointsBalance: newBalance } })
+      await txc.pointsLedger.create({
         data: {
-          companyId:   rest.companyId,
-          moveId:      m.id,
-          type:        'EARNED',
-          points:      pointsAwarded,
+          companyId:    rest.companyId,
+          moveId:       m.id,
+          type:         'EARNED',
+          points:       pointsAwarded,
           balanceAfter: newBalance,
-          description: `Points earned for move ${rest.moveRef}`,
+          description:  `Points earned for move ${rest.moveRef}`,
         },
       })
-
-      // Recalculate tier
-      await recalculateTier(tx, rest.companyId)
+      await recalculateTier(txc, rest.companyId)
     }
 
     return m
@@ -151,7 +147,7 @@ router.post('/', requireAdmin, async (req: Request, res: Response) => {
   return created(res, move)
 })
 
-// ── PATCH /moves/:id/status — admin updates invoice/claims status ─────────────
+// ── PATCH /moves/:id/status ───────────────────────────────────────────────────
 const UpdateStatusSchema = z.object({
   invoicePaid:  z.boolean().optional(),
   claimsFiled:  z.boolean().optional(),
@@ -164,7 +160,7 @@ router.patch('/:id/status', requireAdmin, async (req: Request, res: Response) =>
 
   const move = await prisma.move.findUnique({ where: { id: req.params.id } })
   if (!move) throw notFound('Move')
-  if (move.status === MoveStatus.CREDITED) throw badRequest('Move already credited')
+  if (move.status === MoveStatus.CREDITED)  throw badRequest('Move already credited')
   if (move.status === MoveStatus.CANCELLED) throw badRequest('Move is cancelled')
 
   const invoicePaid = data.data.invoicePaid ?? !!move.invoicePaidAt
@@ -172,37 +168,39 @@ router.patch('/:id/status', requireAdmin, async (req: Request, res: Response) =>
 
   const newStatus: MoveStatus =
     claimsFiled  ? MoveStatus.CANCELLED :
-    !invoicePaid ? MoveStatus.PENDING :
-    MoveStatus.CREDITED
+    !invoicePaid ? MoveStatus.PENDING   : MoveStatus.CREDITED
 
   const pointsAwarded = newStatus === MoveStatus.CREDITED
-    ? calculatePoints(move.eligibleRevenue)
-    : 0
+    ? calculatePoints(move.eligibleRevenue) : 0
 
   const updated = await prisma.$transaction(async (tx) => {
-    const m = await tx.move.update({
+    const txc = tx as unknown as TxClient
+    const m = await txc.move.update({
       where: { id: req.params.id },
-      data:  {
-        invoicePaidAt: invoicePaid ? move.invoicePaidAt ?? new Date() : null,
+      data: {
+        invoicePaidAt: invoicePaid ? (move.invoicePaidAt ?? new Date()) : null,
         claimsFiled,
-        claimsDetail: data.data.claimsDetail,
+        claimsDetail:  data.data.claimsDetail,
         status:        newStatus,
         pointsAwarded,
       },
     })
 
     if (newStatus === MoveStatus.CREDITED && pointsAwarded > 0) {
-      const company = await tx.company.findUnique({ where: { id: move.companyId } })
+      const company = await txc.company.findUnique({ where: { id: move.companyId } })
       const newBalance = (company?.pointsBalance ?? 0) + pointsAwarded
-      await tx.company.update({ where: { id: move.companyId }, data: { pointsBalance: newBalance } })
-      await tx.pointsLedger.create({
+      await txc.company.update({ where: { id: move.companyId }, data: { pointsBalance: newBalance } })
+      await txc.pointsLedger.create({
         data: {
-          companyId: move.companyId, moveId: m.id, type: 'EARNED',
-          points: pointsAwarded, balanceAfter: newBalance,
-          description: `Points confirmed for move ${move.moveRef}`,
+          companyId:    move.companyId,
+          moveId:       m.id,
+          type:         'EARNED',
+          points:       pointsAwarded,
+          balanceAfter: newBalance,
+          description:  `Points confirmed for move ${move.moveRef}`,
         },
       })
-      await recalculateTier(tx, move.companyId)
+      await recalculateTier(txc, move.companyId)
     }
 
     return m
@@ -211,8 +209,8 @@ router.patch('/:id/status', requireAdmin, async (req: Request, res: Response) =>
   return ok(res, updated)
 })
 
-// ── Helper: recalculate tier ──────────────────────────────────────────────────
-async function recalculateTier(tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0], companyId: string) {
+// ── Helper ────────────────────────────────────────────────────────────────────
+async function recalculateTier(tx: TxClient, companyId: string) {
   const twelveMonthsAgo = new Date()
   twelveMonthsAgo.setFullYear(twelveMonthsAgo.getFullYear() - 1)
 
@@ -220,12 +218,12 @@ async function recalculateTier(tx: Parameters<Parameters<typeof prisma.$transact
     where: { companyId, type: 'EARNED', createdAt: { gte: twelveMonthsAgo } },
     _sum:  { points: true },
   })
-  const rollingPoints = result._sum.points ?? 0
+  const rolling = result._sum.points ?? 0
 
-  const tier =
-    rollingPoints >= 25000 ? 'PLATINUM' :
-    rollingPoints >= 15000 ? 'GOLD'     :
-    rollingPoints >= 5000  ? 'SILVER'   : 'BRONZE'
+  const tier: Tier =
+    rolling >= 25000 ? Tier.PLATINUM :
+    rolling >= 15000 ? Tier.GOLD     :
+    rolling >= 5000  ? Tier.SILVER   : Tier.BRONZE
 
   await tx.company.update({ where: { id: companyId }, data: { tier } })
 }
