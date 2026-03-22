@@ -5,6 +5,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import morgan from 'morgan'
 import rateLimit from 'express-rate-limit'
+import { execSync } from 'child_process'
 
 import { errorHandler, notFoundHandler } from './middleware/errorHandler'
 
@@ -20,10 +21,31 @@ import notificationsRoutes from './routes/notifications'
 import reportsRoutes       from './routes/reports'
 import adminRoutes         from './routes/admin'
 
+// ── Run DB migrations on startup ─────────────────────────────────────────────
+function runMigrations() {
+  if (!process.env.DATABASE_URL) {
+    console.error('❌ DATABASE_URL is not set. Please link a PostgreSQL database in Railway.')
+    process.exit(1)
+  }
+  try {
+    console.log('🔄 Running database migrations...')
+    execSync('npx prisma migrate deploy', { stdio: 'inherit' })
+    console.log('✅ Migrations complete')
+  } catch (err) {
+    console.error('❌ Migration failed:', err)
+    process.exit(1)
+  }
+}
+
+// Only run migrations in production (Railway). Locally use npm run db:migrate:dev
+if (process.env.NODE_ENV === 'production') {
+  runMigrations()
+}
+
 const app  = express()
 const PORT = process.env.PORT ?? 3000
 
-// ── Security middleware ───────────────────────────────────────────────────────
+// ── Security ──────────────────────────────────────────────────────────────────
 app.use(helmet())
 app.use(cors({
   origin:      process.env.FRONTEND_URL ?? 'http://localhost:5173',
@@ -33,15 +55,15 @@ app.use(cors({
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 min
-  max:      200,
+  windowMs: 15 * 60 * 1000,
+  max: 200,
   standardHeaders: true,
-  legacyHeaders:   false,
+  legacyHeaders: false,
 })
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max:      20,              // stricter for auth endpoints
-  message:  { success: false, message: 'Too many requests, please try again later' },
+  max: 20,
+  message: { success: false, message: 'Too many requests, please try again later' },
 })
 app.use(limiter)
 
@@ -59,13 +81,13 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString(), version: '1.0.0' })
 })
 
-// ── API Routes ────────────────────────────────────────────────────────────────
+// ── Routes ────────────────────────────────────────────────────────────────────
 app.use('/api/auth',          authLimiter, authRoutes)
 app.use('/api/company',       companyRoutes)
 app.use('/api/moves',         movesRoutes)
 app.use('/api/points',        pointsRoutes)
 app.use('/api/rewards',       rewardsRoutes)
-app.use('/api/redemptions',   rewardsRoutes)   // same router, different mount
+app.use('/api/redemptions',   rewardsRoutes)
 app.use('/api/group',         groupRoutes)
 app.use('/api/tier',          tierRoutes)
 app.use('/api/notifications', notificationsRoutes)
