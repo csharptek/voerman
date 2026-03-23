@@ -1,24 +1,34 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import AuthLayout from '../../layouts/AuthLayout'
 import styles from './Auth.module.css'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('demo@voerman.com')
-  const [password, setPassword] = useState('demo123')
-  const [showPwd, setShowPwd] = useState(false)
-  const [error, setError] = useState('')
+  const [email,    setEmail]    = useState('')
+  const [password, setPassword] = useState('')
+  const [showPwd,  setShowPwd]  = useState(false)
+  const [error,    setError]    = useState('')
+  const [loading,  setLoading]  = useState(false)
   const { login } = useAuth()
-  const navigate = useNavigate()
+  const navigate  = useNavigate()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!email) { setError('Please enter your email address.'); return }
-    const ok = login(email, password)
-    if (ok) navigate('/dashboard')
-    else setError('Invalid credentials.')
+    setError('')
+    if (!email)    { setError('Please enter your email address.'); return }
+    if (!password) { setError('Please enter your password.'); return }
+
+    setLoading(true)
+    try {
+      await login(email, password)
+      navigate('/dashboard')
+    } catch (err: any) {
+      setError(err?.message ?? 'Invalid email or password.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -40,6 +50,7 @@ export default function LoginPage() {
                 placeholder="partner@company.com"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
+                autoComplete="email"
               />
             </div>
           </div>
@@ -54,6 +65,7 @@ export default function LoginPage() {
                 placeholder="••••••••"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
+                autoComplete="current-password"
               />
               <button type="button" className={styles.eyeBtn} onClick={() => setShowPwd(v => !v)}>
                 {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -65,7 +77,12 @@ export default function LoginPage() {
             <Link to="#" className={styles.forgotLink}>Forgot Password?</Link>
           </div>
 
-          <button type="submit" className={styles.btnPrimary}>Log In</button>
+          <button type="submit" className={styles.btnPrimary} disabled={loading}>
+            {loading
+              ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite', marginRight: 8 }} />Signing in...</>
+              : 'Log In'
+            }
+          </button>
 
           <div className={styles.divider}><span>NEW PARTNER?</span></div>
 
@@ -80,10 +97,11 @@ export default function LoginPage() {
       </p>
 
       <div className={styles.demoBox}>
-        <strong>Demo Credentials:</strong> demo@voerman.com / demo123
+        <strong>Seed credentials:</strong> john@acmemoving.com / Admin@123
       </div>
-      {/* deploy-check: v1.0.1 */}
-      <span style={{ opacity: 0, fontSize: 1, position: "absolute" }}>deploy-ok-v1</span>
+
+      {/* deploy-check: v1.0.2 */}
+      <span style={{ opacity: 0, fontSize: 1, position: 'absolute' }}>deploy-ok-v2</span>
     </AuthLayout>
   )
 }
