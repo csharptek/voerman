@@ -5,7 +5,8 @@ import AuthLayout from '../../layouts/AuthLayout'
 import styles from './Auth.module.css'
 
 const LOGO_REG = 'https://www.figma.com/api/mcp/asset/d91b8433-e07a-4178-8b0e-4451d2785e3a'
-const API = import.meta.env.VITE_API_URL ?? ''
+const API = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+console.log('🔍 API URL:', API)
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
