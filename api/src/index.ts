@@ -47,10 +47,22 @@ const PORT = process.env.PORT ?? 3000
 
 // ── Security ──────────────────────────────────────────────────────────────────
 app.use(helmet())
+
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:5173',
+  'http://localhost:3000',
+].filter(Boolean) as string[]
+
 app.use(cors({
-  origin:      process.env.FRONTEND_URL ?? 'http://localhost:5173',
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    if (!origin) return callback(null, true)               // curl, Postman, mobile
+    if (origin.endsWith('.vercel.app')) return callback(null, true)  // any Vercel preview
+    if (allowedOrigins.includes(origin)) return callback(null, true)
+    callback(new Error('CORS: origin not allowed'))
+  },
   credentials: true,
-  methods:     ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
 }))
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
